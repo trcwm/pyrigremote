@@ -10,6 +10,7 @@ from PySide6.QtWidgets import *
 
 from connectdialog import *
 from freqdisplay import *
+from modepanel import *
 
 class MainWindow(QMainWindow):
     
@@ -28,6 +29,11 @@ class MainWindow(QMainWindow):
 
         self.createVFO1()
         self.createVFO2()
+
+        self.modePanel = ModePanel()
+        self.mainLayout.addWidget(self.modePanel, 2,0, 1, 2)
+        self.modePanel.stuffChanged.connect(self.onModeChanged)
+        self.modePanel.muteToggled.connect(self.onMuteChanged)
 
         self.setCentralWidget(self.mainWidget)
         self.show()
@@ -69,10 +75,23 @@ class MainWindow(QMainWindow):
             print("Fail!")
 
     def onFrequency1Changed(self, int):
-        print(self.fdisplay1.getFrequency())
+        print("VFO1: ", self.fdisplay1.getFrequency())
 
     def onFrequency2Changed(self, int):
-        print(self.fdisplay2.getFrequency())
+        print("VFO2: ", self.fdisplay2.getFrequency())
+
+    def onModeChanged(self):
+        vol  = self.modePanel.getVolume()
+        mode = self.modePanel.getMode() 
+        agc  = self.modePanel.getAGC()
+
+        print(vol, mode, agc)
+
+    def onMuteChanged(self, state : bool):
+        if state:
+            print("MUTE")
+        else:
+            print("mute")
 
 def main():
     app = QApplication(sys.argv)
