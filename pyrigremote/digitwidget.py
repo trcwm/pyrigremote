@@ -8,8 +8,11 @@ import resources
 
 class DigitWidget(QWidget):
 
+    digitChanged = Signal(int)
+
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.ID = -1
         self.setValue(0)
         
         self.transparent = False
@@ -25,7 +28,10 @@ class DigitWidget(QWidget):
         self.digitMargins = margins
         widgetSize = self.digitSize.grownBy(margins)        
         self.setFixedSize(widgetSize)
-        
+
+    def getValue(self) -> int:
+        return self.digitValue
+
     def setValue(self, value : int):
         resourceNames = [
             ":/images/0.png",
@@ -44,6 +50,12 @@ class DigitWidget(QWidget):
         self.digitImage = QPixmap(resourceNames[self.digitValue])
         self.update()
 
+    def setID(self, id : int):
+        self.ID = id
+
+    def getID(self):
+        return self.ID
+
     def paintEvent(self, paintEvent):
         painter = QPainter(self)
 
@@ -55,4 +67,16 @@ class DigitWidget(QWidget):
             painter.setOpacity(1.0)
         else:
             painter.drawPixmap(QPoint(self.digitMargins.left(), self.digitMargins.top()), self.digitImage)
+
+    def mousePressEvent(self, mouseEvent : QMouseEvent):
+        pressHeight = mouseEvent.pos().y()
+
+        oldValue = self.digitValue
+        if pressHeight > self.rect().height()/2:
+            self.setValue(self.digitValue-1)
+        else:
+            self.setValue(self.digitValue+1)
+
+        if not (oldValue == self.digitValue):
+            self.digitChanged.emit(self.ID)
 

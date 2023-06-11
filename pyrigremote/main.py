@@ -9,7 +9,7 @@ from PySide6.QtWidgets import *
 # https://doc.qt.io/qtforpython-6/
 
 from connectdialog import *
-from digitwidget import *
+from freqdisplay import *
 
 class MainWindow(QMainWindow):
     
@@ -26,10 +26,10 @@ class MainWindow(QMainWindow):
         self.connectButton.clicked.connect(self.onConnect)
         self.mainLayout.addWidget(self.connectButton, 0,0)
 
-        ## digit widget
-        self.digit = DigitWidget()
-        self.mainLayout.addWidget(self.digit, 1,0)
-
+        ## frequency display widget
+        self.fdisplay1 = FreqDisplay()
+        self.fdisplay1.frequencyChanged.connect(self.onFrequency1Changed)
+        self.mainLayout.addWidget(self.fdisplay1, 1,0)        
         self.setCentralWidget(self.mainWidget)
         self.show()
 
@@ -40,6 +40,9 @@ class MainWindow(QMainWindow):
             print("Baud rate: ", connectDialog.getBaudRate())
         else:
             print("Fail!")
+
+    def onFrequency1Changed(self, int):
+        print(self.fdisplay1.getFrequency())
 
 def main():
     app = QApplication(sys.argv)
