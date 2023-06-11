@@ -3,7 +3,7 @@ try:
     import toml
 except:
     print("Please install the toml package")
-    return
+    exit()
 
 with open("pyproject.toml", "r") as f:
     data = f.read()
