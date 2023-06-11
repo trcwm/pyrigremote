@@ -9,6 +9,7 @@ from PySide6.QtWidgets import *
 # https://doc.qt.io/qtforpython-6/
 
 from connectdialog import *
+from digitwidget import *
 
 class MainWindow(QMainWindow):
     
@@ -19,11 +20,15 @@ class MainWindow(QMainWindow):
         self.mainWidget = QWidget()
         self.mainLayout = QGridLayout()
         self.mainWidget.setLayout(self.mainLayout)
-        
+    
         ## connect button
         self.connectButton = QPushButton("Connect")
         self.connectButton.clicked.connect(self.onConnect)
         self.mainLayout.addWidget(self.connectButton, 0,0)
+
+        ## digit widget
+        self.digit = DigitWidget()
+        self.mainLayout.addWidget(self.digit, 1,0)
 
         self.setCentralWidget(self.mainWidget)
         self.show()
