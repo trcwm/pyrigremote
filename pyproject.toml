@@ -6,7 +6,7 @@
 [project]
 name = "pyrigremote"
 description = "An application to control radios via the serial port"
-version = "0.0.1"
+version = "0.0.2"
 authors = [
   { name="Niels Moseley", email="sofascener@gmail.com" },
 ]

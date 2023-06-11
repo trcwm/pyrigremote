@@ -4,3 +4,6 @@ A program to control radios via the serial port.
 
 ## Dependencies
 * PySide6
+
+### For development
+* toml
