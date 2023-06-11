@@ -10,9 +10,11 @@ from PySide6.QtWidgets import *
 # https://ymt-lab.com/en/post/2021/pyqt5-serial-monitor/
 
 from connectdialog import *
+from toolbar import *
 from freqdisplay import *
 from modepanel import *
 from serialthread import *
+from smeter import *
 
 class MainWindow(QMainWindow):
     
@@ -20,22 +22,24 @@ class MainWindow(QMainWindow):
         QMainWindow.__init__(self)
         self.setWindowTitle('PyRigRemote')
 
+        self.toolBar = ToolBar(self)
+        self.addToolBar(self.toolBar)
+        self.toolBar.connectButton.clicked.connect(self.onConnect)
+
         self.mainWidget = QWidget()
         self.mainLayout = QGridLayout()
         self.mainWidget.setLayout(self.mainLayout)
     
-        ## connect button
-        self.connectButton = QPushButton("Connect")
-        self.connectButton.clicked.connect(self.onConnect)
-        self.mainLayout.addWidget(self.connectButton, 0,0)
-
         self.createVFO1()
         self.createVFO2()
 
         self.modePanel = ModePanel()
-        self.mainLayout.addWidget(self.modePanel, 2,0, 1, 2)
+        self.mainLayout.addWidget(self.modePanel, 1,0, 1, 2)
         self.modePanel.stuffChanged.connect(self.onModeChanged)
         self.modePanel.muteToggled.connect(self.onMuteChanged)
+
+        self.smeter = SMeter()
+        self.mainLayout.addWidget(self.smeter, 2,0, 1, 2)
 
         self.serialThread = None
 
@@ -54,7 +58,7 @@ class MainWindow(QMainWindow):
 
         boxLayout.addWidget(self.fdisplay1)
 
-        self.mainLayout.addWidget(vfo1box, 1,0)
+        self.mainLayout.addWidget(vfo1box, 0,0)
     
     def createVFO2(self):
     
@@ -68,7 +72,7 @@ class MainWindow(QMainWindow):
 
         boxLayout.addWidget(self.fdisplay2)
 
-        self.mainLayout.addWidget(vfo2box, 1,1)
+        self.mainLayout.addWidget(vfo2box, 0,1)
 
     @Slot()
     def onConnect(self):
