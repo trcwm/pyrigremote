@@ -11,11 +11,12 @@ from PySide6.QtWidgets import *
 from connectdialog import *
 from freqdisplay import *
 from modepanel import *
+from serialthread import *
 
 class MainWindow(QMainWindow):
     
     def __init__(self):
-        super().__init__()
+        QMainWindow.__init__(self)
         self.setWindowTitle('PyRigRemote')
 
         self.mainWidget = QWidget()
@@ -34,6 +35,8 @@ class MainWindow(QMainWindow):
         self.mainLayout.addWidget(self.modePanel, 2,0, 1, 2)
         self.modePanel.stuffChanged.connect(self.onModeChanged)
         self.modePanel.muteToggled.connect(self.onMuteChanged)
+
+        self.serialThread = None
 
         self.setCentralWidget(self.mainWidget)
         self.show()
@@ -66,20 +69,30 @@ class MainWindow(QMainWindow):
 
         self.mainLayout.addWidget(vfo2box, 1,1)
 
+    @Slot()
     def onConnect(self):
         connectDialog = ConnectDialog(self)
         if (connectDialog.exec()):
-            print("Port name: ", connectDialog.getPortName())
-            print("Baud rate: ", connectDialog.getBaudRate())
+            if not (self.serialThread == None):
+                self.serialThread.running = False
+                self.serialThread.wait(500)
+
+            self.serialThread = SerialThread(connectDialog.getPortName(), connectDialog.getBaudRate())
+            self.serialThread.setParent(self)
+            self.serialThread.start()
+            self.serialThread.dataReady.connect(self.onSerialDataReady)
         else:
             print("Fail!")
 
+    @Slot()
     def onFrequency1Changed(self, int):
         print("VFO1: ", self.fdisplay1.getFrequency())
 
+    @Slot()
     def onFrequency2Changed(self, int):
         print("VFO2: ", self.fdisplay2.getFrequency())
 
+    @Slot()
     def onModeChanged(self):
         vol  = self.modePanel.getVolume()
         mode = self.modePanel.getMode() 
@@ -87,11 +100,21 @@ class MainWindow(QMainWindow):
 
         print(vol, mode, agc)
 
+    @Slot()
     def onMuteChanged(self, state : bool):
         if state:
             print("MUTE")
         else:
             print("mute")
+
+    @Slot()
+    def onSerialDataReady(self):
+        data = self.serialThread.getData()
+        print(str(data))
+
+    def closeEvent(self, event):
+        self.serialThread.running = False
+        self.serialThread.wait()
 
 def main():
     app = QApplication(sys.argv)
