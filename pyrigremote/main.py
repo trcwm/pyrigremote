@@ -7,6 +7,7 @@ from PySide6.QtCore import Qt
 from PySide6.QtWidgets import *
 
 # https://doc.qt.io/qtforpython-6/
+# https://ymt-lab.com/en/post/2021/pyqt5-serial-monitor/
 
 from connectdialog import *
 from freqdisplay import *
