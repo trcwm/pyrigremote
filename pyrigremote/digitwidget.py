@@ -8,7 +8,8 @@ import resources
 
 class DigitWidget(QWidget):
 
-    digitChanged = Signal(int)
+    digitUp   = Signal(int)
+    digitDown = Signal(int)
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -73,10 +74,8 @@ class DigitWidget(QWidget):
 
         oldValue = self.digitValue
         if pressHeight > self.rect().height()/2:
-            self.setValue(self.digitValue-1)
+            self.digitDown.emit(self.ID)
         else:
-            self.setValue(self.digitValue+1)
-
-        if not (oldValue == self.digitValue):
-            self.digitChanged.emit(self.ID)
+            self.digitUp.emit(self.ID)
+            
 

@@ -26,12 +26,39 @@ class MainWindow(QMainWindow):
         self.connectButton.clicked.connect(self.onConnect)
         self.mainLayout.addWidget(self.connectButton, 0,0)
 
-        ## frequency display widget
-        self.fdisplay1 = FreqDisplay()
-        self.fdisplay1.frequencyChanged.connect(self.onFrequency1Changed)
-        self.mainLayout.addWidget(self.fdisplay1, 1,0)        
+        self.createVFO1()
+        self.createVFO2()
+
         self.setCentralWidget(self.mainWidget)
         self.show()
+
+    def createVFO1(self):
+    
+        vfo1box = QGroupBox("VFO 1")
+        boxLayout = QVBoxLayout()
+        vfo1box.setLayout(boxLayout)
+
+        self.fdisplay1 = FreqDisplay()
+        self.fdisplay1.frequencyChanged.connect(self.onFrequency1Changed)
+        self.fdisplay1.setToolTip("VFO 1");
+
+        boxLayout.addWidget(self.fdisplay1)
+
+        self.mainLayout.addWidget(vfo1box, 1,0)
+    
+    def createVFO2(self):
+    
+        vfo2box = QGroupBox("VFO 2")
+        boxLayout = QVBoxLayout()
+        vfo2box.setLayout(boxLayout)
+
+        self.fdisplay2 = FreqDisplay()
+        self.fdisplay2.frequencyChanged.connect(self.onFrequency2Changed)
+        self.fdisplay2.setToolTip("VFO 2");
+
+        boxLayout.addWidget(self.fdisplay2)
+
+        self.mainLayout.addWidget(vfo2box, 1,1)
 
     def onConnect(self):
         connectDialog = ConnectDialog(self)
@@ -43,6 +70,9 @@ class MainWindow(QMainWindow):
 
     def onFrequency1Changed(self, int):
         print(self.fdisplay1.getFrequency())
+
+    def onFrequency2Changed(self, int):
+        print(self.fdisplay2.getFrequency())
 
 def main():
     app = QApplication(sys.argv)

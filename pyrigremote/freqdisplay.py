@@ -10,18 +10,17 @@ class FreqDisplay(QWidget):
     def __init__(self, parent = None):
         super().__init__(parent)
         
+        self.frequency = 7000000
         self.numberOfDigits = 9
         self.createWidget()
 
+    def setFrequency(self, frequency : int):
+        self.frequency = frequency
+        updateDigits()
+        updateTransparency()
+
     def getFrequency(self) -> int:
-        freq = int(0)
-
-        # digits are ordered from high to low
-        for d in self.digits:
-            freq = freq * 10
-            freq = freq + d.getValue()
-
-        return freq
+        return self.frequency
 
     def createWidget(self):
         self.setContentsMargins(QMargins(0,0,0,0))
@@ -34,7 +33,9 @@ class FreqDisplay(QWidget):
             self.digits.append(DigitWidget())
 
             self.digits[idx].setID(self.numberOfDigits - idx - 1)
-            self.digits[idx].digitChanged.connect(self.onDigitChanged)
+            self.digits[idx].digitUp.connect(self.onDigitUp)
+            self.digits[idx].digitDown.connect(self.onDigitDown)
+
             if ((idx+1) % 3) == 0:
                 self.digits[idx].setDigitMargins(QMargins(10,0,10,-10))
             else:
@@ -42,9 +43,46 @@ class FreqDisplay(QWidget):
 
             self.mainLayout.addWidget(self.digits[idx])
 
+        self.updateDigits()
+        self.updateTransparency()
         self.setLayout(self.mainLayout)
 
+    def updateTransparency(self):
+        transparent = True
+        for d in self.digits:
+            if not (d.getValue() == 0):
+                transparent = False;
 
-    def onDigitChanged(self, id : int):
-        self.frequencyChanged.emit(0)
+            d.setTransparent(transparent)
+
+    def updateDigits(self):
+        freq = self.frequency
+        digitValues = []
+        for idx in range(0, self.numberOfDigits):
+            digitValues.append(freq % 10)
+            freq = freq // 10
+
+        idx = 0
+        for digit in reversed(self.digits):
+            digit.setValue(digitValues[idx])
+            idx = idx + 1
+
+    def onDigitUp(self, id : int):
+        digitPower = pow(10, id)
+
+        self.frequency = self.frequency + digitPower
+        self.updateDigits()
+
+        self.updateTransparency()
+        self.frequencyChanged.emit(self.frequency)
+        return
+
+    def onDigitDown(self, id : int):
+        digitPower = pow(10, id)
+
+        self.frequency = max(self.frequency - digitPower, 0)
+        self.updateDigits()
+
+        self.updateTransparency()
+        self.frequencyChanged.emit(self.frequency)
         return
