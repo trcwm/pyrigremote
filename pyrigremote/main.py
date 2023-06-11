@@ -16,11 +16,16 @@ from modepanel import *
 from serialthread import *
 from smeter import *
 
+try:
+    from version import *
+except:
+    version = "UNKNOWN VERSION"
+
 class MainWindow(QMainWindow):
     
     def __init__(self):
         QMainWindow.__init__(self)
-        self.setWindowTitle('PyRigRemote')
+        self.setWindowTitle('PyRigRemote ' + version)
 
         self.toolBar = ToolBar(self)
         self.addToolBar(self.toolBar)

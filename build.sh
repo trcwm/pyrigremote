@@ -3,5 +3,6 @@
 # SPDX-License-Identifier: GPL-3.0-only
 
 ./compile_resources.sh
+./update_version.py
 rm -rf dist
 python3 -m build
