@@ -1,3 +1,5 @@
+# Copyright 2023 - 2023, Niels Moseley and the pyrigremote contributors
+# SPDX-License-Identifier: GPL-3.0-only
 
 from PySide6.QtWidgets import *
 from PySide6.QtSerialPort import *
@@ -39,3 +41,9 @@ class ConnectDialog(QDialog):
         self.layout.addWidget(self.buttonBox)
 
         self.setLayout(self.layout)
+
+    def getBaudRate(self):
+        return int(self.rateCombo.currentText())
+
+    def getPortName(self):
+        return self.portCombo.currentText()

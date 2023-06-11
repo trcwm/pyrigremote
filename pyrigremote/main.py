@@ -1,4 +1,7 @@
 #!/usr/bin/python3
+# Copyright 2023 - 2023, Niels Moseley and the pyrigremote contributors
+# SPDX-License-Identifier: GPL-3.0-only
+
 import sys
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import *
@@ -28,7 +31,8 @@ class MainWindow(QMainWindow):
     def onConnect(self):
         connectDialog = ConnectDialog(self)
         if (connectDialog.exec()):
-            print("OK")
+            print("Port name: ", connectDialog.getPortName())
+            print("Baud rate: ", connectDialog.getBaudRate())
         else:
             print("Fail!")
 
