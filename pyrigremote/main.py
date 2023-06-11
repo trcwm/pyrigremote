@@ -26,6 +26,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
         self.setWindowTitle('PyRigRemote ' + version)
+        self.setWindowIcon(QIcon(":/images/appicon.png"))
 
         self.toolBar = ToolBar(self)
         self.addToolBar(self.toolBar)
